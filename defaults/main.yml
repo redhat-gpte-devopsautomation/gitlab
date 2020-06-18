@@ -1,0 +1,17 @@
+---
+# defaults file for gitlab
+gitlab_firewall_ports:
+  - protocol: tcp
+    ports:
+      - 80
+      - 443
+      - 22
+
+gitlab_package_dependencies:
+  - curl
+  - policycoreutils-python
+  - openssh-server
+  - postfix
+
+# public hostname url e.g gitlab.example.com
+public_hostname: "utility.{{ guid }}{{ subdomain_base_suffix }}"

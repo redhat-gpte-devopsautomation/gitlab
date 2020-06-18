@@ -1,0 +1,5 @@
+---
+# tasks file for gitlab
+
+- import_tasks: firewalld.yml
+- import_tasks: gitlab.yml

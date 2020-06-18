@@ -1,0 +1,46 @@
+---
+# gitlab setup
+- name: install dependencies
+  package:
+    name: "{{ gitlab_package_dependencies }}"
+    state: present
+
+- name: start openssh
+  service:
+    name: sshd
+    enabled: true
+    state: started
+
+- name: enable postfix for notification
+  service:
+    name: postfix
+    enabled: true
+    state: started
+
+- name: Checking if gitlab-ctl is exist
+  stat:
+    path: /usr/bin/gitlab-ctl
+  register: gitlab_ctl
+
+- name: Tasks to setup gitlab
+  when: not gitlab_ctl.stat.exists | bool
+  block:
+    - name: Download gitlab installation script
+      get_url:
+        url: https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.rpm.sh
+        dest: /tmp/gitlab_installation_script.sh
+        validate_certs: false
+        mode: 0755
+
+    - name: Run gitlab installation script
+      command: bash /tmp/gitlab_installation_script.sh
+      register: shell_output
+
+    - name: Install gitlab package
+      environment:
+        EXTERNAL_URL: "{{ public_hostname }}"
+      package:
+        name: gitlab-ee
+        state: present
+      async: 3600
+      poll: 30
