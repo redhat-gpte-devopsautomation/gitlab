@@ -38,7 +38,7 @@
 
     - name: Install gitlab package
       environment:
-        EXTERNAL_URL: "{{ public_hostname }}"
+        EXTERNAL_URL: "{{ gitlab_public_hostname }}"
       package:
         name: gitlab-ee
         state: present
